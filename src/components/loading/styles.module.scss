@@ -1,0 +1,28 @@
+.container{
+  display: flex;
+  justify-content: center;
+  height: calc(100vh - 6rem);
+
+  p{
+    color: var(--pink-200);
+    font-size: 2rem;
+
+    &::after{
+      content: '';
+
+      animation: points 1s infinite alternate;
+    }
+  }
+}
+
+@keyframes points{
+  0% {
+    content: '.';
+  }
+  50% {
+    content: '..';
+  }
+  100% {
+    content: '...';
+  }
+}
