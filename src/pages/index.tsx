@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/accessible-emoji */
 import Head from 'next/head';
 import Prismic from '@prismicio/client';
 import { FiCalendar, FiUser } from 'react-icons/fi';
@@ -11,6 +12,7 @@ import { getPrismicClient } from '../services/prismic';
 import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
 import Header from '../components/Header';
+import ButtonPreview from '../components/ButtonPreview';
 
 interface Post {
   uid?: string;
@@ -29,9 +31,13 @@ interface PostPagination {
 
 interface HomeProps {
   postsPagination: PostPagination;
+  preview: boolean;
 }
 
-export default function Home({ postsPagination }: HomeProps): JSX.Element {
+export default function Home({
+  postsPagination,
+  preview,
+}: HomeProps): JSX.Element {
   const postFormatted = postsPagination.results.map(post => {
     return {
       ...post,
@@ -85,6 +91,13 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
         <title>Inicio | spacetraveling</title>
       </Head>
       <Header />
+
+      {posts.length <= 0 && (
+        <section className={styles.notFoundPost}>
+          📢 Nenhum post foi localizado.
+        </section>
+      )}
+
       <div className={styles.posts}>
         {posts.map(post => (
           <Link href={`/post/${post.uid}`} key={post.uid}>
@@ -114,16 +127,19 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
           </button>
         )}
       </div>
+
+      {preview && <ButtonPreview />}
     </main>
   );
 }
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps = async ({ preview = false }) => {
   const prismic = getPrismicClient();
+
   const postResponse = await prismic.query(
     [Prismic.Predicates.at('document.type', 'post')],
     {
-      pageSize: 1,
+      pageSize: 2,
     }
   );
 
@@ -147,6 +163,7 @@ export const getStaticProps: GetStaticProps = async () => {
   return {
     props: {
       postsPagination,
+      preview,
     },
   };
 };

@@ -49,3 +49,10 @@
   color: var(--pink-200);
   margin-top: 4rem;
 }
+
+.notFoundPost{
+  text-align: center;
+  color: var(--white);
+  filter: brightness(.3);
+  cursor: default;
+}
